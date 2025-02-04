@@ -8,7 +8,17 @@ type NumberProperties = "even" | "odd" | "armstrong";
 export class NumberService {
   constructor(private readonly httpService: HttpService) {}
 
-  async classifyNumber(number: number) {
+  async classifyNumber(number: any) {
+    // Check if the input is a number
+    if (typeof number !== 'number') {
+      return { error: "Input must be a number. Strings are not allowed." };
+    }
+
+    // Check if the number is an integer (reject floats)
+    if (!Number.isInteger(number)) {
+      return { error: "Only integers are allowed. Floats are not accepted." };
+    }
+
     const isPrime = this.isPrime(number);
     const isPerfect = this.isPerfect(number);
     const isArmstrong = this.isArmstrong(number);
@@ -16,8 +26,8 @@ export class NumberService {
     const isEven = number % 2 === 0;
 
     const properties: NumberProperties[] = [];
-    if (isArmstrong) properties.push('armstrong');
-    properties.push(isEven ? 'even' : 'odd');
+    if (isArmstrong) properties.push("armstrong");
+    properties.push(isEven ? "even" : "odd");
 
     const funFact = await this.getFunFact(number);
 
@@ -40,39 +50,33 @@ export class NumberService {
   }
 
   private isPerfect(num: number): boolean {
-    if (num <= 0) return false; // Negative numbers & 0 are not perfect
-
-    let sum = 0;
-    for (let i = 1; i <= num / 2; i++) {
+    let sum = 1;
+    for (let i = 2; i * i <= num; i++) {
       if (num % i === 0) {
         sum += i;
+        if (i !== num / i) sum += num / i;
       }
     }
-    return sum === num;
+    return sum === num && num !== 1;
   }
 
   private isArmstrong(num: number): boolean {
-    const absNum = Math.abs(num); // Handle negatives
-    const digits = absNum.toString().split('').map(Number);
+    const digits = num.toString().split("").map(Number);
     const numDigits = digits.length;
-    const sum = digits.reduce((total, digit) => total + Math.pow(digit, numDigits), 0);
-
-    return sum === absNum;
+    return digits.reduce((sum, digit) => sum + Math.pow(digit, numDigits), 0) === num;
   }
 
   private calculateDigitSum(num: number): number {
-    return Math.abs(num) // Handle negative numbers
+    const absSum = Math.abs(num)
       .toString()
-      .split('')
-      .map(Number)
-      .reduce((sum, digit) => sum + digit, 0);
+      .split("")
+      .reduce((sum, digit) => sum + parseInt(digit, 10), 0);
+    return num < 0 ? -absSum : absSum;
   }
 
   private async getFunFact(num: number): Promise<string> {
     try {
-      const { data }: AxiosResponse<string> = await this.httpService.axiosRef.get(
-        `http://numbersapi.com/${num}/math`
-      );
+      const { data }: AxiosResponse<string> = await this.httpService.axiosRef.get(`http://numbersapi.com/${num}/math`);
       return data;
     } catch (error) {
       return `No fun fact found for ${num}. Error: ${error}`;

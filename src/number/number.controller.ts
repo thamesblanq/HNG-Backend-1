@@ -7,14 +7,18 @@ export class NumberController {
 
   @Get('classify-number')
   async classifyNumber(@Query('number') numberParam: string) {
-    const number = parseInt(numberParam, 10);
+    // Check if the input is a valid number and an integer
+    const parsedNumber = parseFloat(numberParam);
 
-    if (isNaN(number)) {
+    if (isNaN(parsedNumber) || !Number.isInteger(parsedNumber)) {
       throw new BadRequestException({
         number: numberParam,
-        error: true,
+        error: "true",
       });
     }
+
+    // Parse the number as an integer for further processing
+    const number = parseInt(numberParam, 10);
 
     return this.numberService.classifyNumber(number);
   }
