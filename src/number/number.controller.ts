@@ -10,7 +10,7 @@ export class NumberController {
     // Check if the input is a valid number and an integer
     const parsedNumber = parseFloat(numberParam);
 
-    if (isNaN(parsedNumber) || !Number.isInteger(parsedNumber)) {
+    if (isNaN(parsedNumber) || numberParam.includes('.')) {
       throw new BadRequestException({
         error: true,
         number: numberParam,
