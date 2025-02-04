@@ -12,7 +12,7 @@ export class NumberController {
 
     if (isNaN(parsedNumber) || numberParam.includes('.')) {
       throw new BadRequestException({
-        number: "alphabet",
+        number: numberParam,
         error: true,
       });
     }
