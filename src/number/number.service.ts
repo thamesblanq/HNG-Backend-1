@@ -23,9 +23,9 @@ export class NumberService {
     }
 
     // Early exit for small numbers
-    if (number < 2) {
+/*     if (number < 2) {
       return this.handleSmallNumber(number);
-    }
+    } */
 
     // Use memoization for performance-critical checks
     const isPrime = this.memoizedIsPrime(number);
@@ -65,7 +65,7 @@ export class NumberService {
     return { number: "invalid", error: true };
   }
 
-  private async handleSmallNumber(number: number) {
+/*   private async handleSmallNumber(number: number) {
     return {
       number,
       is_prime: false,
@@ -74,7 +74,7 @@ export class NumberService {
       digit_sum: Math.abs(number),
       fun_fact: await this.getFunFact(number),
     };
-  }
+  } */
 
   private memoizedIsPrime(num: number): boolean {
     if (this.primeCache.has(num)) {
@@ -123,16 +123,24 @@ export class NumberService {
   }
 
   private isArmstrong(num: number): boolean {
-    if (num < 0) return false;
-
-    // Accept all single-digit numbers as Armstrong numbers
-    if (num >= 0 && num < 10) return true;
-
-    const digits = num.toString().split("").map(Number);
+    // Ensure all single-digit numbers (-9 to 9) are considered Armstrong
+    if (num >= -9 && num <= 9) return true;
+  
+    // Work with the absolute value for calculations
+    const absoluteNum = Math.abs(num);
+    const digits = absoluteNum.toString().split("").map(Number);
     const numDigits = digits.length;
-
-    return digits.reduce((sum, digit) => sum + Math.pow(digit, numDigits), 0) === num;
+  
+    // Compute the Armstrong sum
+    const armstrongSum = digits.reduce((sum, digit) => sum + Math.pow(digit, numDigits), 0);
+  
+    // Compare with the absolute value of the original number
+    return armstrongSum === absoluteNum;
   }
+  
+  
+  
+    
 
   private calculateDigitSum(num: number): number {
     return Math.abs(num)
