@@ -164,7 +164,7 @@ export class NumberService {
   
     try {
       const { data }: AxiosResponse<string> = await this.httpService.axiosRef.get(`http://numbersapi.com/${num}/math`, {
-        timeout: 400,
+        timeout: 2000,
       });
       
       // Set cache with TTL as a number (in milliseconds)
