@@ -12,8 +12,8 @@ export class NumberController {
 
     if (isNaN(parsedNumber) || !Number.isInteger(parsedNumber)) {
       throw new BadRequestException({
-        number: numberParam,
         error: "true",
+        number: numberParam,
       });
     }
 
