@@ -123,10 +123,13 @@ export class NumberService {
   }
 
   private isArmstrong(num: number): boolean {
-    // Ensure all single-digit numbers (-9 to 9) are considered Armstrong
-    if (num >= -9 && num <= 9) return true;
+    // Return false for all negative numbers
+    if (num < 0) return false;
   
-    // Work with the absolute value for calculations
+    // Ensure all single-digit numbers (0 to 9) are considered Armstrong
+    if (num >= 0 && num <= 9) return true;
+  
+    // Work with the absolute value for calculations (though num is already non-negative)
     const absoluteNum = Math.abs(num);
     const digits = absoluteNum.toString().split("").map(Number);
     const numDigits = digits.length;
